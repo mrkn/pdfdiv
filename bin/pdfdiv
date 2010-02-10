@@ -42,7 +42,7 @@ end
 
 src_pages = OSX.CGPDFDocumentGetNumberOfPages(src_pdf)
 if src_pages == 0
-  abort "the PDF file has not any pages: #{src_path}"
+  abort "the PDF file doesn't have any pages: #{src_path}"
 end
 
 info_dict = OSX.CFDictionaryCreateMutable(
