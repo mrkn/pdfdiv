@@ -5,8 +5,7 @@ begin
   require 'osx/cocoa'
   OSX.require_framework 'Quartz'
 rescue LoadError
-  $stderr.puts "RubyCocoa is required"
-  exit 1
+  abort "RubyCocoa is needed"
 end
 
 if ARGV.length < 2
