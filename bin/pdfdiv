@@ -32,7 +32,7 @@ unless src_pdf = OSX.CGPDFDocumentCreateWithURL(src_url)
 end
 
 if OSX.CGPDFDocumentIsEncrypted(src_pdf)
-  abort "the src PDF file is encrypted: #{src_path}" <<
+  abort "the src PDF file is encrypted: #{src_path}\n" <<
     "Sorry, encrypted PDF has not been supported yet"
 end
 
