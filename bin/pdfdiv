@@ -22,7 +22,7 @@ unless File.file? src_path
 end
 
 if File.exist? dest_path
-  abort "the file is already exist: #{dest_path}"
+  abort "the file already exists: #{dest_path}"
 end
 
 src_url = OSX.CFURLCreateFromFileSystemRepresentation(OSX::KCFAllocatorDefault, src_path, src_path.bytesize, false)
