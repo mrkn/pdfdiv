@@ -9,52 +9,46 @@ rescue LoadError
 end
 
 if ARGV.length < 2
-  $stderr.puts "#{$0} INPUT.pdf OUTPUT.pdf"
-  exit 1
+  abort "#{$0} INPUT.pdf OUTPUT.pdf"
 end
 src_path, dest_path = ARGV[0,2]
 
 unless File.file? src_path
   if File.exists? src_path
-    $stderr.puts "can't open the file: #{src_path}"
+    abort "can't open the file: #{src_path}"
   else
-    $stderr.puts "file not found: #{src_path}"
+    abort "file not found: #{src_path}"
   end
-  exit 1
 end
 
 if File.exist? dest_path
-  $stderr.puts "the file is already exist: #{dest_path}"
-  exit 1
+  abort "the file is already exist: #{dest_path}"
 end
 
 src_url = OSX.CFURLCreateFromFileSystemRepresentation(OSX::KCFAllocatorDefault, src_path, src_path.bytesize, false)
 dest_url = OSX.CFURLCreateFromFileSystemRepresentation(OSX::KCFAllocatorDefault, ARGV[1], ARGV[1].bytesize, false)
 unless src_pdf = OSX.CGPDFDocumentCreateWithURL(src_url)
-  $stderr.puts "not a PDF file: #{src_path}"
-  exit 1
+  abort "not a PDF file: #{src_path}"
 end
 
 if OSX.CGPDFDocumentIsEncrypted(src_pdf)
-  $stderr.puts "the src PDF file is encrypted: #{src_path}"
-  $stderr.puts "Sorry, encrypted PDF has not been supported yet"
-  exit 1
+  abort "the src PDF file is encrypted: #{src_path}" <<
+    "Sorry, encrypted PDF has not been supported yet"
 end
 
 unless OSX.CGPDFDocumentIsUnlocked(src_pdf)
-  $stderr.puts "Can't unlock the PDF file: #{src_path}"
-  exit 1
+  abort "Can't unlock the PDF file: #{src_path}"
 end
 
 src_pages = OSX.CGPDFDocumentGetNumberOfPages(src_pdf)
 if src_pages == 0
-  $stderr.puts "the PDF file has not any pages: #{src_path}"
-  exit 1
+  abort "the PDF file has not any pages: #{src_path}"
 end
 
-info_dict = OSX.CFDictionaryCreateMutable(nil, 0,
-                                          OSX::KCFTypeDictionaryKeyCallBacks,
-                                          OSX::KCFTypeDictionaryValueCallBacks)
+info_dict = OSX.CFDictionaryCreateMutable(
+  nil, 0,
+  OSX::KCFTypeDictionaryKeyCallBacks,
+  OSX::KCFTypeDictionaryValueCallBacks)
 #OSX.CFDictionarySetValue(info_dict, OSX::KCGPDFContextTitle,   "title"); # FIXME
 #OSX.CFDictionarySetValue(info_dict, OSX::KCGPDFContextCreator, "creator"); # FIXME
 dest_pdf = OSX.CGPDFContextCreateWithURL(dest_url, nil, info_dict)
